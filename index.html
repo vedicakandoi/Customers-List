@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <title>CustomersList</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+</head>
+<body ng-app="myApp" ng-controller="myCtrl" ng-init="showList=false;showLogin=false;toggle=true">
+    <header>
+        <h1>CustomersList</h1>
+        <button ng-click="viewLogin()" class="login-btn pointer" ng-show="toggle">Login</button>
+        <button ng-click="toggleList()" class="login-btn pointer" ng-hide="toggle">Logout</button>
+    </header>
+    <div class="please-login" ng-hide="showList">
+        <i class="material-icons">groups</i>
+        <h1>Please Login To View Your Customers</h1>
+    </div>
+    <div class="login-page" id="loginPage" ng-show="showLogin">
+        <div class="login-form">
+            <span ng-click="crossLogin()" class="cross pointer">&times;</span>
+            <h2>Login<span> Here</span></h2>
+            <form name="inputform" ng-submit="toggleList()" novalidate>
+                <input type="text" placeholder="Username" spellcheck="false" ng-required="true" name="username" ng-model="name">
+                <input type="password" placeholder="Password" ng-required="true" name="password" ng-model="password">
+                <input type="submit" value="Log in" class="pointer btn" ng-disabled="inputform.username.$error.required || inputform.password.$error.required">
+            </form>
+            <small class="pointer">Forgot password?</small>
+        </div>
+    </div>
+    <div class="customers-list" ng-show="showList">
+        <table>
+            <tr>
+                <th class="short">ID</th>
+                <th>Name</th>
+                <th class="mid">Username</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>Phone</th>
+                <th class="mid">Website</th>
+                <th>Company</th>
+            </tr>
+            <tr ng-repeat="user in users">
+                <td class="short">{{user.id}}</td>
+                <td>{{user.name}}</td>
+                <td class="mid">{{user.username}}</td>
+                <td>{{user.email}}</td>
+                <td><span class="detail">{{user.address.suite}}, {{user.address.street}}, </span>{{user.address.city}}</td>
+                <td>{{user.phone}}</td>
+                <td class="mid">{{user.website}}</td>
+                <td>{{user.company.name}}<span class="detail">{{user.company.catchPhrase}}</span></td>
+            </tr>
+        </table>
+    </div>
+    
+    <footer>
+        
+    </footer>
+    <script>
+        var app = angular.module('myApp', []);
+        app.controller('myCtrl', function($scope,$http) {
+            $http.get('users.json').then(function(response) {
+                $scope.users = response.data;
+            })
+            $scope.viewLogin = function() {
+                $scope.showLogin = true;
+            }
+            $scope.toggleList = function() {
+                if ($scope.showList == false) {
+                    $scope.showList = true;
+                } else {
+                    $scope.showList = false;
+                }
+                if ($scope.showLogin==true) {
+                    $scope.showLogin = false;
+                }
+                if ($scope.toggle==true) {
+                    $scope.toggle = false;
+                } else {
+                    $scope.toggle = true;
+                }
+            }
+            $scope.crossLogin = function () {
+                $scope.showLogin = false;
+            }
+        });
+    </script>
+</body>
+</html>
